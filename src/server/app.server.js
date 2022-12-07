@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const AppMongoDB = require('../db/app.db');
-const AppRouter = require('../routes/app.routes')
+const AppRouter = require('../routes/app.routes');
+const { initializeApp } = require('firebase/app');
 
 
 class AppServer {
@@ -22,6 +23,9 @@ class AppServer {
 
         //Middleware
         this.middlewares();
+        
+        //Firebase
+        this.firebase();
     }
     //Function Conection to MongoDB
     conectionDB = async () => {
@@ -35,6 +39,17 @@ class AppServer {
         this.app.use(express.json());
         //Router Configuration URL - AppRouter
         this.app.use(this.appUrlPath, this.appRouter.router);
+    }
+    firebase = () => {
+        const firebaseConfig = {
+            apiKey: process.env.APIKEY,
+            authDomain: process.env.AUTHDOMAIN,
+            projectId: process.env.PROJECTID,
+            storageBucket: process.env.STORAGEBUCKET,
+            messagingSenderId: process.env.MESSAGINGSENDERID,
+            appId: process.env.APPID
+          };
+          initializeApp(firebaseConfig)
     }
     //App Run Url & Port
     listen = () => {
