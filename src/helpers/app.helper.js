@@ -19,7 +19,7 @@ class AppHelper {
     userExist = async (id) => {
         const existUser = await appModel.findOne({id})
         if (!existUser) {
-            throw new Error('User already exist!')
+            throw new Error('User not exist!')
         }
     }
 
