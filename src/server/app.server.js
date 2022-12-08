@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const AppMongoDB = require('../db/app.db');
 const AppRouter = require('../routes/app.routes');
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocs = require('../../swagger.json')
 
 
 class AppServer {
@@ -36,6 +38,8 @@ class AppServer {
         this.app.use(express.json());
         //Router Configuration URL - AppRouter
         this.app.use(this.appUrlPath, this.appRouter.router);
+        //Swagger
+        this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
     }
     
     //App Run Url & Port

@@ -38,6 +38,14 @@ class AppRouter{
     }
 
     //Router User Coleccion
+    userColeccionLogin = async () => {
+        try {
+            await this.router.post('/login', this.appController.userColeccionLogin)
+        } catch (error) {
+            throw new Error('File: app.routes.js - Method: userColeccionPost - POST')
+        }
+    }
+
     userColeccionPost = async () => {
         try {
             await this.router.post('/userColeccion',[check('name', 'Invalid Name').not().isEmpty(),

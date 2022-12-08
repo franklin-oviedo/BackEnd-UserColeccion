@@ -1,4 +1,4 @@
-const { response, request, query } = require("express");
+const { response, request } = require("express");
 const appModel = require("../models/app.model");
 const bcryptjs = require('bcryptjs');
 
@@ -14,6 +14,15 @@ class AppController {
         }
     }
     //User Coleccion
+    userColeccionLogin = async (req = request, res = response) => {
+        try {
+            await res.status(200)
+            
+        } catch (error) {
+            throw new Error('File: Controller - Method: userColeccionPost - Error');
+        }
+    }
+
     userColeccionPost = async (req = request, res = response) => {
         try {
 
