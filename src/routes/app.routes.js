@@ -26,6 +26,7 @@ class AppRouter{
         this.userColeccionPut();
         this.userColeccionGet();
         this.userColeccionDelete();
+        this.userColeccionLogin();
     }
     //App Router
     appRouterGet = async () => {
@@ -40,10 +41,13 @@ class AppRouter{
     //Router User Coleccion
     userColeccionLogin = async () => {
         try {
-            await this.router.post('/login', this.appController.userColeccionLogin)
+            await this.router.post('/userColeccion/login',[this.appMiddleware.validationJWT,
+                                                           check('email', 'Invalid Email').isEmail(),
+                                                           check('password', 'Invalid Password').not().isEmpty(),
+                                                           this.appMiddleware.validationsReq], this.appController.userColeccionLogin)
         } catch (error) {
-            throw new Error('File: app.routes.js - Method: userColeccionPost - POST')
-        }
+            throw new Error('File: app.routes.js - Method: userColeccionLogin - POST')
+        }   
     }
 
     userColeccionPost = async () => {
@@ -62,10 +66,11 @@ class AppRouter{
 
     userColeccionPut = async () => {
         try {
-            await this.router.put('/userColeccion/:id', [check('id', 'Invalid Id').isMongoId(),
+            await this.router.put('/userColeccion/:id', [this.appMiddleware.validationJWT, this.appMiddleware.allowRoles('Admin', 'Seller'), check('id', 'Invalid Id').isMongoId(),
                                                          check('id').custom(this.appHelper.userExist), 
                                                          this.appMiddleware.validationsReq], this.appController.userColeccionPut)
         } catch (error) {
+            console.log(error)
             throw new Error('File: app.routes.js - Method: userColeccionPut - PUT')
         }
     }
@@ -80,7 +85,7 @@ class AppRouter{
 
     userColeccionDelete = async () => {
         try {
-            await this.router.delete('/userColeccion/:id', [check('id', 'Invalid Id').isMongoId(),
+            await this.router.delete('/userColeccion/:id', [this.appMiddleware.validationJWT, this.appMiddleware.authRole, check('id', 'Invalid Id').isMongoId(),
                                                          check('id').custom(this.appHelper.userExist), 
                                                          this.appMiddleware.validationsReq], this.appController.userColeccionDelete)
         } catch (error) {
