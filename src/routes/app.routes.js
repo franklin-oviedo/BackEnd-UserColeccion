@@ -56,7 +56,6 @@ class AppRouter{
                                                      check('lastname', 'Invalid Lastname').not().isEmpty(),
                                                      check('password', 'Invalid Password').not().isEmpty().isStrongPassword({minLength: 6}),
                                                      check('email', 'Invalid Email').not().isEmpty().isEmail().custom(this.appHelper.emailExist),
-                                                     //check('role', 'Invalido Role').not().isEmpty().isIn(['Admin', 'User']),
                                                      check('role', 'Invalid Role').custom(this.appHelper.validateRole),
                                                      this.appMiddleware.validationsReq], this.appController.userColeccionPost)
         } catch (error) {
