@@ -27,6 +27,7 @@ class AppRouter{
         this.userColeccionGet();
         this.userColeccionDelete();
         this.userColeccionLogin();
+        this.userColeccionGoogleLogin();
     }
     //App Router
     appRouterGet = async () => {
@@ -45,6 +46,14 @@ class AppRouter{
                                                            check('email', 'Invalid Email').isEmail(),
                                                            check('password', 'Invalid Password').not().isEmpty(),
                                                            this.appMiddleware.validationsReq], this.appController.userColeccionLogin)
+        } catch (error) {
+            throw new Error('File: app.routes.js - Method: userColeccionLogin - POST')
+        }   
+    }
+    userColeccionGoogleLogin = async () => {
+        try {
+            await this.router.post('/userColeccion/google',[check('id_token', 'Invalid Token').not().isEmpty(),
+                                                           this.appMiddleware.validationsReq], this.appController.userColeccionGoogleLogin)
         } catch (error) {
             throw new Error('File: app.routes.js - Method: userColeccionLogin - POST')
         }   

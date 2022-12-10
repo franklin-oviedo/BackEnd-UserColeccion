@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Backen Runing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Google-Sign in</h1>
+
+    <div id="g_id_onload" data-client_id="774200951564-spbghj90k612g28vs7t9ptdlhnt5skur.apps.googleusercontent.com"
+        data-auto_prompt="false" data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with"
+        data-shape="rectangular" data-logo_alignment="left">
+    </div>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <button id="googleSingOut">
+        Sign out
+    </button>
+    <script>
+        function handleCredentialResponse(response) {
+
+            const body = {id_token: response.credential};
+            fetch('http://localhost:3000/api/userColeccion/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(resp => resp.json())
+            .then(resp => {localStorage.setItem('email', resp.userGoogleInfo.email)})
+            .catch(console.log)
+            
+        }
+
+        const button = document.getElementById('googleSingOut')
+        button.onclick = () => {
+            google.accounts.id.disableAutoSelect();
+            google.accounts.id.revoke(localStorage.getItem('email'), done => {
+                localStorage.clear();
+                location.reload();
+            })
+
+        }
+    </script>
+
+</body>
+
+</html>

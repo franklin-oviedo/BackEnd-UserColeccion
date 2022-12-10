@@ -9,8 +9,9 @@ class AppController {
     //App
     appGet = async (req = request, res = response) => {
         try {
-            await res.status(200).send('App Backend Runing!');
+            await res.status(200).render('app.view.hbs');
         } catch (error) {
+            console.log(error)
             throw new Error('File Controller - AppGet - Error');
         }
     }
@@ -49,6 +50,44 @@ class AppController {
         } catch (error) {
             console.log(error)
             throw new Error('File: Controller - Method: userColeccionLogin - Error');
+        }
+    }
+
+    userColeccionGoogleLogin = async (req = request, res = response) => {
+        try {
+            const {id_token} = req.body;
+            const {name, picture, email} = await appHelper.googleVerify(id_token);
+
+            let userGoogleInfo = await appModel.findOne({email});
+            if(!userGoogleInfo){
+                const googleData = {
+                    name,
+                    lastname: 'System',
+                    email,
+                    password: 'System Backend User Coleccion',
+                    role: 'User',
+                    img: picture,
+                    status: true,
+                    google: true
+                };
+
+                userGoogleInfo = await new appModel(googleData)
+                await userGoogleInfo.save();
+            }
+            if(!userGoogleInfo.status){
+                return res.status(401).json({
+                    msg: 'User not Allowed'
+                })
+            }
+
+            const token = await appHelper.generateJWT(userGoogleInfo.id)
+            res.status(200).json({
+                msg:'Auth Success',
+                token,
+                userGoogleInfo
+            })
+        } catch (error) {
+            console.log(error)
         }
     }
 
